@@ -1,3 +1,5 @@
+require('dotenv').config();
+
 const connection = require("./db");
 const inquirer = require("inquirer");
 
