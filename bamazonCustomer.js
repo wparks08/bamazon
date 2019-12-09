@@ -28,7 +28,7 @@ function displayItems() {
                         product.item_id,
                         product.product_name,
                         product.department_name,
-                        product.price / 100,
+                        product.getPrice(),
                         product.stock_quantity
                     ]
                 );
@@ -84,19 +84,21 @@ function promptPurchase() {
 //--Update db with new quantity
 //--Show customer total cost of purchase
 function fulfillOrder(product, qty) {
-    let total = product.price * qty / 100;
+    let total = product.getPrice() * qty;
     let receipt = new Table();
     receipt.push(
         { "Item" : product.product_name },
-        { "Price" : "$ " + product.price / 100 },
+        { "Price" : "$ " + product.getPrice() },
         { "Quantity" : qty },
         { "Total" : "$ " + total }
     );
 
+    product.reduceQuantity(qty);
+
     connection.query(
         "UPDATE product SET ? WHERE ?",
         [
-            { stock_quantity: product.stock_quantity - qty },
+            { stock_quantity: product.stock_quantity },
             { item_id: product.item_id }
         ],
         (err, result) => {

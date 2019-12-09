@@ -7,9 +7,12 @@ function Product(values) {
 }
 
 //fn: reduce quantity
-
+Product.prototype.reduceQuantity = function (reduceBy) {
+    this.stock_quantity -= reduceBy;
+}
 //fn: get price
-
-//fn: save?
+Product.prototype.getPrice = function () {
+    return (this.price / 100).toFixed(2);
+}
 
 module.exports = Product;
