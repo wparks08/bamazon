@@ -7,7 +7,9 @@ function Product(values) {
 }
 
 Product.prototype.print = function () {
-    console.log(""); //Print everything here
+    console.log(
+        `ID: ${this.item_id} -- ${this.product_name}, ${this.department_name}`
+    ); //Print everything here
 }
 
 module.exports = Product;

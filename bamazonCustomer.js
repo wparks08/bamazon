@@ -2,6 +2,7 @@ require('dotenv').config();
 
 const connection = require("./db");
 const inquirer = require("inquirer");
+var Table = require("cli-table");
 
 const Product = require("./Product");
 
@@ -17,6 +18,23 @@ function displayItems() {
                 products.push(new Product(product));
             });
             
+            let productTable = new Table({
+                head: ["ID", "Product Name", "Department", "Price", "Qty"]
+            });
+
+            products.forEach(product => {
+                productTable.push(
+                    [
+                        product.item_id,
+                        product.product_name,
+                        product.department_name,
+                        product.price / 100,
+                        product.stock_quantity
+                    ]
+                );
+            });
+
+            console.log(productTable.toString());
         }
     )
 }
