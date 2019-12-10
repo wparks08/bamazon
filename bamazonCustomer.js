@@ -18,32 +18,32 @@ function displayItems() {
                 products.push(new Product(product));
             });
             
-            let productTable = new Table({
-                head: ["ID", "Product Name", "Department", "Price", "Qty"]
-            });
-
-            products.forEach(product => {
-                productTable.push(
-                    [
-                        product.item_id,
-                        product.product_name,
-                        product.department_name,
-                        product.getPrice(),
-                        product.stock_quantity
-                    ]
-                );
-            });
-
-            console.log(productTable.toString());
+            printProductTable();
             promptPurchase();
         }
     )
 }
 
-displayItems();
-//Prompt user:
-//-Ask ID of product to buy
-//-Ask how many units of product
+function printProductTable() {
+    let productTable = new Table({
+        head: ["ID", "Product Name", "Department", "Price", "Qty"]
+    });
+
+    products.forEach(product => {
+        productTable.push(
+            [
+                product.item_id,
+                product.product_name,
+                product.department_name,
+                product.getPrice(),
+                product.stock_quantity
+            ]
+        );
+    });
+
+    console.log(productTable.toString());
+}
+
 function promptPurchase() {
     let selectedProduct;
     inquirer.prompt([
@@ -78,28 +78,37 @@ function promptPurchase() {
         fulfillOrder(selectedProduct, answers.qty);
     })
 }
-//Check if sufficient inventory
-//-If no, log a message and prevent order
-//-If yes, "fulfill" order
-//--Update db with new quantity
-//--Show customer total cost of purchase
-function fulfillOrder(product, qty) {
-    let total = product.getPrice() * qty;
-    let receipt = new Table();
-    receipt.push(
-        { "Item" : product.product_name },
-        { "Price" : "$ " + product.getPrice() },
-        { "Quantity" : qty },
-        { "Total" : "$ " + total }
-    );
 
+function validateIDInput(input) {
+    let result = "Invalid ID";
+    products.forEach(product => {
+        if (product.item_id == input) {
+            result = true;
+            selectedProduct = product;
+        }
+    });
+    return result;
+}
+
+function fulfillOrder(product, qty) {
     product.reduceQuantity(qty);
 
+    updateProduct(
+        { stock_quantity: product.stock_quantity },
+        { item_id: product.item_id }
+    );
+
+    printReceipt(product, qty);
+    console.log("Thank you for choosing Bamazon!");
+    connection.end();
+}
+
+function updateProduct(values, condition) {
     connection.query(
         "UPDATE product SET ? WHERE ?",
         [
-            { stock_quantity: product.stock_quantity },
-            { item_id: product.item_id }
+            values,
+            condition
         ],
         (err, result) => {
             if (err) {
@@ -107,8 +116,19 @@ function fulfillOrder(product, qty) {
             }
         }
     )
+}
+
+function printReceipt(product, qty) {
+    let total = product.getPrice() * qty;
+    let receipt = new Table();
+    receipt.push(
+        { "Item": product.product_name },
+        { "Price": "$ " + product.getPrice() },
+        { "Quantity": qty },
+        { "Total": "$ " + total }
+    );
 
     console.log(receipt.toString());
-    console.log("Thank you for choosing Bamazon!");
-    connection.end();
 }
+
+displayItems();
