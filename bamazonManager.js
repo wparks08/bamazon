@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const connection = require("./db");
 const inquirer = require("inquirer");
-var Table = require("cli-table");
+const tables = require("./tables");
 
 const Product = require("./Product");
 

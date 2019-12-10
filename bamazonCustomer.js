@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const connection = require("./db");
 const inquirer = require("inquirer");
-var Table = require("cli-table");
+const tables = require("./tables");
 
 const Product = require("./Product");
 
@@ -18,30 +18,10 @@ function displayItems() {
                 products.push(new Product(product));
             });
             
-            printProductTable();
+            tables.productTable.print(products);
             promptPurchase();
         }
     )
-}
-
-function printProductTable() {
-    let productTable = new Table({
-        head: ["ID", "Product Name", "Department", "Price", "Qty"]
-    });
-
-    products.forEach(product => {
-        productTable.push(
-            [
-                product.item_id,
-                product.product_name,
-                product.department_name,
-                product.getPrice(),
-                product.stock_quantity
-            ]
-        );
-    });
-
-    console.log(productTable.toString());
 }
 
 function promptPurchase() {
@@ -79,17 +59,6 @@ function promptPurchase() {
     })
 }
 
-function validateIDInput(input) {
-    let result = "Invalid ID";
-    products.forEach(product => {
-        if (product.item_id == input) {
-            result = true;
-            selectedProduct = product;
-        }
-    });
-    return result;
-}
-
 function fulfillOrder(product, qty) {
     product.reduceQuantity(qty);
 
@@ -98,7 +67,7 @@ function fulfillOrder(product, qty) {
         { item_id: product.item_id }
     );
 
-    printReceipt(product, qty);
+    tables.receipt.print(product, qty);
     console.log("Thank you for choosing Bamazon!");
     connection.end();
 }
@@ -116,19 +85,6 @@ function updateProduct(values, condition) {
             }
         }
     )
-}
-
-function printReceipt(product, qty) {
-    let total = product.getPrice() * qty;
-    let receipt = new Table();
-    receipt.push(
-        { "Item": product.product_name },
-        { "Price": "$ " + product.getPrice() },
-        { "Quantity": qty },
-        { "Total": "$ " + total }
-    );
-
-    console.log(receipt.toString());
 }
 
 displayItems();
