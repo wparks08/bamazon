@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const connection = require("./db");
+const db = require("./db");
 const inquirer = require("inquirer");
 const tables = require("./tables");
 
@@ -21,18 +21,87 @@ function promptManagerMenu() {
     ]).then(menu => {
         switch (menu.selection) {
             case "forSale":
-                console.log("forSale");
+                db.product.list(promptManagerMenu);
                 break;
             case "lowInventory":
-                console.log("lowInventory");
+                db.product.findWhere("stock_quantity < 5", promptManagerMenu);
                 break;
             case "addInventory":
-                console.log("addInventory");
+                let products = [];
+
+                db.product.list(
+                    function () {
+                        addInventory(products);
+                    },
+                    products
+                );
                 break;
             case "newProduct":
-                console.log("newProduct");
+                addNewProduct();
                 break;
         }
+    })
+}
+
+function addInventory(products) {
+    let selectedProduct;
+    inquirer.prompt([
+        {
+            type: "number",
+            message: "Enter ID of Item: ",
+            name: "id",
+            validate: function (input) {
+                let result = "Invalid ID";
+                products.forEach(product => {
+                    if (product.item_id == input) {
+                        result = true;
+                        selectedProduct = product;
+                    }
+                });
+                return result;
+            }
+        },
+        {
+            type: "number",
+            message: "How many new units? ",
+            name: "newUnits"
+        }
+    ]).then(answers => {
+        db.product.update(
+            { stock_quantity: selectedProduct.stock_quantity + answers.newUnits },
+            { item_id: selectedProduct.item_id }
+        );
+        promptManagerMenu();
+    })
+}
+
+function addNewProduct() {
+    inquirer.prompt([
+        {
+            message: "Enter Product Name: ",
+            name: "product_name",
+        },
+        {
+            message: "Enter Department Name: ",
+            name: "department_name"
+        },
+        {
+            type: "number",
+            message: "Enter Price: ",
+            name: "price"
+        },
+        {
+            type: "number",
+            message: "Enter current stock: ",
+            name: "stock_quantity"
+        }
+    ]).then(product => {
+        if (product.price % 1) {
+            product.price = product.price.toString().split(".").join(""); //price is stored as cents
+        }
+
+        db.product.save(product);
+        promptManagerMenu();
     })
 }
 

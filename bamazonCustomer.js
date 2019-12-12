@@ -9,7 +9,7 @@ const Product = require("./Product");
 var products = [];
 //Display items for sale
 function displayItems() {
-    db.product.list(products, promptPurchase);
+    db.product.list(promptPurchase, products);
 }
 
 function promptPurchase() {
@@ -50,7 +50,7 @@ function promptPurchase() {
 function fulfillOrder(product, qty) {
     product.reduceQuantity(qty);
 
-    updateProduct(
+    db.product.update(
         { stock_quantity: product.stock_quantity },
         { item_id: product.item_id }
     );
@@ -58,21 +58,6 @@ function fulfillOrder(product, qty) {
     tables.receipt.print(product, qty);
     console.log("Thank you for choosing Bamazon!");
     db.connection.end();
-}
-
-function updateProduct(values, condition) {
-    db.connection.query(
-        "UPDATE product SET ? WHERE ?",
-        [
-            values,
-            condition
-        ],
-        (err, result) => {
-            if (err) {
-                throw err;
-            }
-        }
-    )
 }
 
 displayItems();
