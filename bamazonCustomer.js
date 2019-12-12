@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const connection = require("./db");
+const db = require("./db");
 const inquirer = require("inquirer");
 const tables = require("./tables");
 
@@ -9,19 +9,7 @@ const Product = require("./Product");
 var products = [];
 //Display items for sale
 function displayItems() {
-    connection.query(
-        "SELECT * FROM product",
-        (err, result) => {
-            if (err) throw err;
-
-            result.forEach(product => {
-                products.push(new Product(product));
-            });
-            
-            tables.productTable.print(products);
-            promptPurchase();
-        }
-    )
+    db.product.list(products, promptPurchase);
 }
 
 function promptPurchase() {
@@ -69,11 +57,11 @@ function fulfillOrder(product, qty) {
 
     tables.receipt.print(product, qty);
     console.log("Thank you for choosing Bamazon!");
-    connection.end();
+    db.connection.end();
 }
 
 function updateProduct(values, condition) {
-    connection.query(
+    db.connection.query(
         "UPDATE product SET ? WHERE ?",
         [
             values,
