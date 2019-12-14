@@ -34,11 +34,9 @@ function findWhere(condition, callback) {
             let arr = [];
 
             result.forEach(product => {
-              let newProduct = new Product(product);
-              newProduct.department_name = departments.filter(
-                dep => dep.department_id == newProduct.department_id
-              )[0].department_name;
-              arr.push(newProduct);
+                let newProduct = new Product(product);
+                newProduct.department_name = departments.filter(dep => dep.department_id == newProduct.department_id)[0].department_name;
+                arr.push(newProduct);
             });
 
             tables.productTable.print(arr);
