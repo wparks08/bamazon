@@ -2,9 +2,6 @@ require('dotenv').config();
 
 const db = require("./db");
 const inquirer = require("inquirer");
-const tables = require("./tables");
-
-const Product = require("./Product");
 
 function promptManagerMenu() {
     inquirer.prompt([
@@ -14,7 +11,8 @@ function promptManagerMenu() {
                 { name: "View Products for Sale", value: "forSale", short: "View Products for Sale"},
                 { name: "View Low Inventory", value: "lowInventory", short: "View Low Inventory"},
                 { name: "Add to Inventory", value: "addInventory", short: "Add to Inventory"},
-                { name: "Add New Product", value: "newProduct", short: "Add New Product"}
+                { name: "Add New Product", value: "newProduct", short: "Add New Product"},
+                { name: "Exit", value: "exit", short: "Exit"}
             ],
             name: "selection"
         }
@@ -39,6 +37,8 @@ function promptManagerMenu() {
             case "newProduct":
                 addNewProduct();
                 break;
+            case "exit":
+                db.connection.end();
         }
     })
 }

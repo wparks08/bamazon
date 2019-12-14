@@ -4,8 +4,6 @@ const db = require("./db");
 const inquirer = require("inquirer");
 const tables = require("./tables");
 
-const Product = require("./Product");
-
 var products = [];
 //Display items for sale
 function displayItems() {
