@@ -1,3 +1,5 @@
+//Constructor for use with product db table
+
 function Product(values) {
     this.item_id = values.item_id;
     this.product_name = values.product_name;

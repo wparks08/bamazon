@@ -9,7 +9,7 @@ var products = [];
 function displayItems() {
     db.product.list(promptPurchase, products);
 }
-
+//Begin the purchase process with a prompt
 function promptPurchase() {
     let selectedProduct;
     inquirer.prompt([
@@ -44,7 +44,7 @@ function promptPurchase() {
         fulfillOrder(selectedProduct, answers.qty);
     })
 }
-
+//Complete the purchase process by adjusting relevant product numbers and printing the receipt
 function fulfillOrder(product, qty) {
     product.reduceQuantity(qty);
     product.adjustProductSales(qty * product.getPrice());

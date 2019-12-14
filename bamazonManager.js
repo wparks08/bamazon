@@ -2,7 +2,7 @@ require('dotenv').config();
 
 const db = require("./db");
 const inquirer = require("inquirer");
-
+//Initial prompt for manager functions
 function promptManagerMenu() {
     inquirer.prompt([
         {
@@ -42,7 +42,7 @@ function promptManagerMenu() {
         }
     })
 }
-
+//Begin add inventory process
 function addInventory(products) {
     let selectedProduct;
     inquirer.prompt([
@@ -74,7 +74,7 @@ function addInventory(products) {
         promptManagerMenu();
     })
 }
-
+//Begin add new product process
 function addNewProduct() {
     db.department.getAll().then(departments => {
         let departmentChoices = [];

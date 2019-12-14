@@ -2,7 +2,7 @@ require("dotenv").config();
 
 const db = require("./db");
 const inquirer = require("inquirer");
-
+//Initial prompt for supervisor functions
 function promptSupervisorMenu() {
     inquirer.prompt([
         {
@@ -27,7 +27,7 @@ function promptSupervisorMenu() {
         }
     });
 }
-
+//Begin add new department process
 function promptNewDepartment() {
     inquirer.prompt([
         {
@@ -40,7 +40,7 @@ function promptNewDepartment() {
             name: "over_head_costs"
         }
     ]).then(department => {
-        db.department.insert(department, promptSupervisorMenu);
+        db.department.save(department, promptSupervisorMenu);
     })
 }
 

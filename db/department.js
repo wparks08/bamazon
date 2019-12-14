@@ -2,8 +2,7 @@ var connection = require("./connection");
 var Department = require("../Department");
 var tables = require("../tables");
 
-//fn: list product sales by department in a table
-//    department_id | department_name | over_head_costs | product_sales | total_profit
+//list product sales by department in a table
 function listDepartmentSales(callback) {
     connection.query(
         `SELECT department.department_id, department_name, over_head_costs, SUM(p.product_sales) AS product_sales, (SUM(p.product_sales) - over_head_costs) AS total_profit
@@ -22,7 +21,7 @@ function listDepartmentSales(callback) {
     );
 }
 
-//fn: return all departments as an array of objects
+//return all departments as an array of objects
 function getAll() {
     return new Promise(function(resolve, reject) {
         let departments = [];
@@ -41,8 +40,8 @@ function getAll() {
         )
     })
 }
-
-function insert(values, callback) {
+//persist new department
+function save(values, callback) {
     connection.query(
         "INSERT INTO department SET ?",
         values,
@@ -59,5 +58,5 @@ function insert(values, callback) {
 module.exports = {
     listDepartmentSales: listDepartmentSales,
     getAll: getAll,
-    insert: insert
+    save: save
 }

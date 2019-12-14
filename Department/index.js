@@ -1,3 +1,5 @@
+//Constructor for use with department db table
+
 function Department(values) {
     this.department_id = values.department_id;
     this.department_name = values.department_name;
