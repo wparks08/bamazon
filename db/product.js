@@ -1,42 +1,51 @@
 var connection = require("./connection");
+var department = require("./department");
 var Product = require("../Product");
 var tables = require("../tables");
 
 function list(callback, arr = []) {
-    connection.query(
-      "SELECT item_id, product_name, department_name, price, stock_quantity FROM product JOIN department on product.department_id = department.department_id",
-      (err, result) => {
-        if (err) throw err;
+    department.getAll().then(departments => {
+        connection.query("SELECT * FROM product", (err, result) => {
+          if (err) {
+              throw err;
+          }
 
-        result.forEach(product => {
-          arr.push(new Product(product));
+          result.forEach(product => {
+                let newProduct = new Product(product);
+                newProduct.department_name = departments.filter(dep => dep.department_id == newProduct.department_id)[0].department_name;
+                arr.push(newProduct);
+          });
+
+          tables.productTable.print(arr);
+          callback();
         });
-
-        tables.productTable.print(arr);
-        callback();
-      }
-    );
+    });
 }
 
 function findWhere(condition, callback) {
-    connection.query(
-      "SELECT item_id, product_name, department_name, price, stock_quantity FROM product JOIN department on product.department_id = department.department_id WHERE " +
-        connection.escape(condition),
-      (err, result) => {
-        if (err) {
-          throw err;
-        }
+    department.getAll().then(departments => {
+        connection.query(
+          "SELECT * FROM product WHERE " + condition,
+          (err, result) => {
+            if (err) {
+              throw err;
+            }
 
-        let arr = [];
+            let arr = [];
 
-        result.forEach(product => {
-          arr.push(new Product(product));
-        });
+            result.forEach(product => {
+              let newProduct = new Product(product);
+              newProduct.department_name = departments.filter(
+                dep => dep.department_id == newProduct.department_id
+              )[0].department_name;
+              arr.push(newProduct);
+            });
 
-        tables.productTable.print(arr);
-        callback();
-      }
-    );
+            tables.productTable.print(arr);
+            callback();
+          }
+        );
+    });
 }
 
 function update(values, condition) {

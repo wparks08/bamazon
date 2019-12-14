@@ -47,9 +47,10 @@ function promptPurchase() {
 
 function fulfillOrder(product, qty) {
     product.reduceQuantity(qty);
+    product.adjustProductSales(qty * product.getPrice());
 
     db.product.update(
-        { stock_quantity: product.stock_quantity },
+        { stock_quantity: product.stock_quantity, product_sales: product.product_sales },
         { item_id: product.item_id }
     );
 
