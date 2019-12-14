@@ -15,7 +15,7 @@ function print(data) {
         ]);
     });
 
-    console.log(salesTable.toString);
+    console.log(salesTable.toString());
 }
 
 module.exports = {

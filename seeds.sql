@@ -1,10 +1,10 @@
 USE bamazon;
 
-INSERT INTO department (department_name)
-            VALUES ("Movies"),
-                   ("Electronics"),
-                   ("Pets"),
-                   ("Automotive");
+INSERT INTO department (department_name, over_head_costs)
+            VALUES ("Movies", 15000),
+                   ("Electronics", 40000),
+                   ("Pets", 5000),
+                   ("Automotive", 10000);
 
 INSERT INTO product (product_name, department_id, price, stock_quantity)
             VALUES  ("The Departed", (SELECT department_id FROM department WHERE department_name="Movies"), 999, 324),
