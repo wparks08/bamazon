@@ -76,33 +76,49 @@ function addInventory(products) {
 }
 
 function addNewProduct() {
-    inquirer.prompt([
-        {
-            message: "Enter Product Name: ",
-            name: "product_name",
-        },
-        {
-            message: "Enter Department Name: ",
-            name: "department_name"
-        },
-        {
-            type: "number",
-            message: "Enter Price: ",
-            name: "price"
-        },
-        {
-            type: "number",
-            message: "Enter current stock: ",
-            name: "stock_quantity"
-        }
-    ]).then(product => {
-        if (product.price % 1) {
-            product.price = product.price.toString().split(".").join(""); //price is stored as cents
-        }
+    db.department.getAll().then(departments => {
+        let departmentChoices = [];
+        departments.forEach(department => {
+            departmentChoices.push({
+                name: department.department_name,
+                value: department.department_id,
+                short: department.department_name
+            });
+        })
+        inquirer.prompt([
+            {
+              message: "Enter Product Name: ",
+              name: "product_name"
+            },
+            {
+              type: "list",
+              choices: departmentChoices,
+              message: "Select Department: ",
+              name: "department_id"
+            },
+            {
+              type: "number",
+              message: "Enter Price: ",
+              name: "price"
+            },
+            {
+              type: "number",
+              message: "Enter current stock: ",
+              name: "stock_quantity"
+            }
+          ])
+          .then(product => {
+            if (product.price % 1) {
+              product.price = product.price
+                .toString()
+                .split(".")
+                .join(""); //price is stored as cents
+            }
 
-        db.product.save(product);
-        promptManagerMenu();
-    })
+            db.product.save(product);
+            promptManagerMenu();
+          });
+    });
 }
 
 promptManagerMenu();
