@@ -41,12 +41,15 @@ Manager has four different functions:
     - This displays a table in the terminal with all products listed (same as in the Customer section)
 2. View Low Inventory
     - Displays a table of any item in which less than 5 remain in stock.
+
     ![View Low Inventory](./assets/img/low-inventory.png)
 3. Add to Inventory
     - Allows you to increase the remaining stock of any item
+
     ![Add To Inventory](./assets/img/add-to-inventory.png)
 4. Add New Product
     - Provides the interface for adding an entirely new item to inventory
+
     ![Add New Product](./assets/img/add-new-product.png)
 
 ### Supervisor
@@ -55,10 +58,11 @@ Supervisor has two functions:
 
 1. View Product Sale By Department
     - Prints a table to the terminal showing all departments, their overhead costs, total product sales, and total profit
+    
     ![View Product Sales By Department](./assets/img/department-sales.png)
 2. Create New Department
     - Allows the creation of a new department
-    
+
     ![Create New Department](./assets/img/create-new-department.png)
 
 ## Technologies Used
